@@ -7,9 +7,9 @@ fun main() {
             it.split("   ").map { it.toInt() }
         }
 
-        val listASorted = unsortedPairs.map { it.first() }
-        val listBSorted = unsortedPairs.map { it.last() }
-        return Pair(listASorted, listBSorted)
+        val listA = unsortedPairs.map { it.first() }
+        val listB = unsortedPairs.map { it.last() }
+        return Pair(listA, listB)
     }
 
     fun part1(input: List<String>): Int {
