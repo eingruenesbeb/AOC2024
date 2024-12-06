@@ -27,6 +27,8 @@ fun <T> List<T>.withoutElementAt(index: Int): List<T> = filterIndexed { i, _ -> 
  * A data class holding a 2D-grid of values. Internally data is stored as List (x-index) of columns (y-index).
  *
  * **The input must be square!**
+ *
+ * *Smells a bit like a matrix, if you ask me.*
  */
 open class Grid2D<T>(private val elements: List<List<T>>) {
     val xDimension = elements.size
@@ -55,7 +57,7 @@ open class Grid2D<T>(private val elements: List<List<T>>) {
     }
 
     /**
-     * Iterates through rows x fist, then increases y, whilst wrapping around to 0 in the x-index.
+     * Iterates through rows x first, then increases y, whilst wrapping around to 0 in the x-index.
      *
      * @throws NoSuchElementException If all elements have been reached at least once
      */

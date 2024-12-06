@@ -54,7 +54,8 @@ class WordSearch(elements: List<List<Char>>): Grid2D<Char>(elements) {
         var crossMasFound = 0
         var seeds = findCrossMASStart()
 
-        /* Check the corners for these patterns. There are 6 unique ones, if you respect orientation:
+        /*
+         * Check the corners for these patterns. There are 6 unique ones, if you respect orientation:
          * 4 "symmetrical" ones and 2 "anti-symmetrical" ones, **which are to be disregarded**.
          */
         val validCornerPatterns = listOf("MMSS", "SMMS", "MSSM", "SSMM", "SSMM")
