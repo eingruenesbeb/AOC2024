@@ -30,9 +30,11 @@ fun <T> List<T>.withoutElementAt(index: Int): List<T> = filterIndexed { i, _ -> 
  *
  * *Smells a bit like a matrix, if you ask me.*
  */
-open class Grid2D<T>(private val elements: List<List<T>>) {
-    val xDimension = elements.size
-    val yDimension = elements.first().size
+open class Grid2D<T>(protected var elements: List<List<T>>) {
+    var xDimension = elements.size
+        private set
+    var yDimension = elements.first().size
+        private set
 
     operator fun get(x: Int, y: Int): T = elements[x][y]
 
@@ -41,12 +43,34 @@ open class Grid2D<T>(private val elements: List<List<T>>) {
         return elements[vec[0].toInt()][vec[1].toInt()]
     }
 
+    operator fun set(x: Int, y: Int, value: T) {
+        val newColumn = elements[x].toMutableList()
+        newColumn[y] = value
+        val newElements = elements.toMutableList()
+        newElements[x] = newColumn.toList()
+
+        elements = newElements.toList()
+    }
+
+    operator fun set(vec: VecNReal, value: T) {
+        set(vec.entries[0].toInt(), vec.entries[1].toInt(), value)
+    }
+
     /**
      * Swaps indices. Rows become columns and vice versa.
      * E.g.:
      * `[[a, b], [c, d]]` becomes `[[a, c], [b, d]]`.
      */
-    fun transposed() = Grid2D((0 until yDimension).map { x -> (0 until xDimension).map { y -> this[x, y] } })
+    fun transpose() {
+        elements = buildList {
+            (0 until yDimension).forEach { y ->
+                add(buildList { (0 until xDimension).forEach { x -> add(get(x, y)) } })
+            }
+        }
+
+        xDimension = elements.size
+        yDimension = elements.first().size
+    }
 
     fun asIterable(gridIterator: GridIterator<T> = XYAscendGridIterator<T>(this)) = Grid2DIterable(elements, gridIterator)
 
@@ -98,6 +122,8 @@ open class Grid2D<T>(private val elements: List<List<T>>) {
 }
 
 open class VecNReal(val entries: List<Double>) {
+    constructor(twoDimIndex: Pair<Int, Int>) : this(twoDimIndex.toList().map { it.toDouble() })
+
     val dimension = entries.size
 
     operator fun plus(other: VecNReal): VecNReal {
@@ -119,6 +145,14 @@ open class VecNReal(val entries: List<Double>) {
     operator fun get(index: Int): Double = entries[index]
 
     fun norm(): Double = sqrt(this * this)
+
+    override fun equals(other: Any?): Boolean = (other as? VecNReal)?.entries == entries
+
+    override fun hashCode(): Int {
+        var result = dimension
+        result = 31 * result + entries.hashCode()
+        return result
+    }
 }
 
 infix fun Double.scaleVec(vec: VecNReal) = VecNReal(vec.entries.map { this * it })
