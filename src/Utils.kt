@@ -2,6 +2,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -156,3 +157,23 @@ open class VecNReal(val entries: List<Double>) {
 }
 
 infix fun Double.scaleVec(vec: VecNReal) = VecNReal(vec.entries.map { this * it })
+
+/**
+ * Rotate a collection by a given amount.
+ *
+ * @param by The amount to rotate the collection by. Positive values rotate it to the right, negatives in the other.
+ *
+ * @return A list version of the [Collection], rotated by the specified amount.
+ */
+fun <E> Collection<E>.rotated(by: Int): List<E> {
+    if (isEmpty()) return emptyList()
+
+    val asList = toList()
+    val rotateBy = abs(by) % size
+
+    return if (by > 0) {
+        asList.drop(size - rotateBy) + asList.dropLast(rotateBy)
+    } else if (by < 0) {
+        asList.drop(rotateBy) + asList.dropLast(size - rotateBy)
+    } else asList
+}

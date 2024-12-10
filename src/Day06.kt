@@ -101,4 +101,3 @@ sealed class MapObject {
         }
     }
 }
-
