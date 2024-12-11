@@ -3,6 +3,7 @@ import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 import kotlin.math.abs
+import kotlin.math.round
 import kotlin.math.sqrt
 
 /**
@@ -75,6 +76,8 @@ open class Grid2D<T>(protected var elements: List<List<T>>) {
 
     fun asIterable(gridIterator: GridIterator<T> = XYAscendGridIterator<T>(this)) = Grid2DIterable(elements, gridIterator)
 
+    fun isInGrid(indexVector: VecNReal) = indexVector.entries[0] in 0.0..<xDimension.toDouble() && indexVector.entries[1] in 0.0..<yDimension.toDouble()
+
     sealed class GridIterator<T>(protected val grid: Grid2D<T>): Iterator<T> {
         abstract fun currentX(): Int
         abstract fun currentY(): Int
@@ -145,7 +148,7 @@ open class VecNReal(val entries: List<Double>) {
 
     operator fun get(index: Int): Double = entries[index]
 
-    fun norm(): Double = sqrt(this * this)
+    operator fun unaryMinus(): VecNReal = VecNReal(entries.map { -it })
 
     override fun equals(other: Any?): Boolean = (other as? VecNReal)?.entries == entries
 
@@ -154,6 +157,12 @@ open class VecNReal(val entries: List<Double>) {
         result = 31 * result + entries.hashCode()
         return result
     }
+
+    override fun toString(): String = entries.joinToString(", ", "(", ")")
+
+    fun norm() = sqrt(this * this)
+
+    fun roundComponents() = VecNReal(entries.map { round(it) })
 }
 
 infix fun Double.scaleVec(vec: VecNReal) = VecNReal(vec.entries.map { this * it })
