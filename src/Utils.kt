@@ -186,3 +186,5 @@ fun <E> Collection<E>.rotated(by: Int): List<E> {
         asList.drop(rotateBy) + asList.dropLast(size - rotateBy)
     } else asList
 }
+
+fun IntRange.size(): Int = toList().size
