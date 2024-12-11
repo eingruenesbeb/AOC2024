@@ -57,8 +57,12 @@ fun Disk.compactContiguous(): DiscretizedDisk {
                     add(DiskBlock(-1, (emptyBlock.indexRange.last() - spaceRemaining + 1)..emptyBlock.indexRange.last()))
                     break
                 }
-
                 val fittingBlock = onlyFiles[fittingBlockIndex]
+                if (fittingBlock.indexRange.first <= emptyBlock.indexRange.last) {
+                    add(DiskBlock(-1, (emptyBlock.indexRange.last() - spaceRemaining + 1)..emptyBlock.indexRange.last()))
+                    break
+                }
+
                 val newDiscretizedIndex = with(emptyBlock.indexRange.last() - spaceRemaining + 1) { this until (this + fittingBlock.indexRange.size()) }
                 add(fittingBlock.copy(indexRange = newDiscretizedIndex))
                 spaceRemaining -= fittingBlock.indexRange.size()
@@ -67,8 +71,6 @@ fun Disk.compactContiguous(): DiscretizedDisk {
             }
         }
     }
-
-    TODO("Probably an issue with reassembling the stuff.")
 
     val replaceWithEmpty = emptySpacesCreatedIndexes.flatten()
     var replacementIndex = 0
